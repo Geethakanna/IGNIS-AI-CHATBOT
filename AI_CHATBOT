@@ -1,4 +1,4 @@
-# Import necessary libraries
+
 import random
 import string
 import warnings
@@ -8,36 +8,36 @@ from sklearn.metrics.pairwise import cosine_similarity
 import nltk
 from nltk.stem import WordNetLemmatizer
 
-# Ignore any warnings for cleaner output
+
 warnings.filterwarnings('ignore')
 
-# Download NLTK data files if you haven't already
+
 nltk.download('punkt', quiet=True)
 nltk.download('wordnet', quiet=True)
 
-# Read the data for the chatbot responses
+
 with open('studentassistance.txt', 'r', encoding='utf8', errors='ignore') as fin:
     raw = fin.read().lower()
 
-# Tokenize the text into sentences and words
+
 sentTokens = nltk.sent_tokenize(raw)
 wordTokens = nltk.word_tokenize(raw)
 
-# Initialize the lemmatizer for processing words
+
 lemmer = WordNetLemmatizer()
 
-# Function to lemmatize tokens
+
 def lemTokens(tokens):
     return [lemmer.lemmatize(token) for token in tokens]
 
-# Prepare to remove punctuation from input
+
 removePunctDict = dict((ord(punct), None) for punct in string.punctuation)
 
-# Normalize the text by converting to lower case and removing punctuation
+
 def lemNormalize(text):
     return lemTokens(nltk.word_tokenize(text.lower().translate(removePunctDict)))
 
-# Define greetings and responses for a friendly start
+
 greetingInputs = ("hello", "hi", "greetings", "hey", "whats up")
 greetingResponses = [
     "Hello! How can I help you with your studies today?",
@@ -45,13 +45,13 @@ greetingResponses = [
     "Greetings! I'm here to assist with any questions you have."
 ]
 
-# Function to respond to greetings
+
 def greeting(sentence):
     for word in sentence.split():
         if word.lower() in greetingInputs:
             return random.choice(greetingResponses)
 
-# Responses tailored for student queries
+
 additionalResponses = {
     "how to apply for a technical course": "Visit the official Department of Technical Education website for application details.",
     "what are the eligibility criteria": "Eligibility criteria vary by course. Let me know the specific course you're interested in!",
@@ -66,7 +66,7 @@ additionalResponses = {
     "what is the importance of internships": "Internships provide hands-on experience, which is invaluable when you enter the job market.",
 }
 
-# Generate a response based on user input
+
 def generateResponse(userResponse):
     sentTokens.append(userResponse)  # Add user's response to the token list
     tfidfVec = TfidfVectorizer(tokenizer=lemNormalize, stop_words='english')
@@ -82,12 +82,12 @@ def generateResponse(userResponse):
     else:
         return sentTokens[idx]
 
-# Function to save chat history to a file
+
 def saveChatHistory(userInput, assistantResponse):
     with open("chathistory.txt", "a") as file:
         file.write(f"You: {userInput}\nAssistant: {assistantResponse}\n\n")
 
-# Main loop for chatting with the user
+
 flag = True
 print("Assistant: Hi! I'm your AI Student Assistant. How can I help you today? (Type 'Bye' to exit.)")
 while flag:
